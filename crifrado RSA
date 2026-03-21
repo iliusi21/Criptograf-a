@@ -1,0 +1,65 @@
+import random
+
+
+def es_primo(num):
+    if num < 2: return False
+    for i in range(2, int(num**0.5) + 1):
+        if num % i == 0:
+            return False
+    return True
+
+
+def mcd(a, b):
+    while b:
+        a, b = b, a % b
+    return a
+
+
+palabra = input("Introduce la palabra o frase a cifrar: ")
+
+
+print("\n--- Generando llaves ---")
+p = random.randint(50, 150)
+while not es_primo(p):
+    p = random.randint(50, 150)
+
+q = random.randint(50, 150)
+while not es_primo(q) or q == p:
+    q = random.randint(50, 150)
+
+
+n = p * q
+phi = (p - 1) * (q - 1)  
+
+
+e = random.randint(2, 99)
+while mcd(e, phi) != 1:
+    e = random.randint(2, 99)
+
+
+d = pow(e, -1, phi)
+
+print(f"Primos elegidos: p={p}, q={q}")
+print(f"Valor de n (p*q): {n}")
+print(f"Valor de phi: {phi}")
+print(f"Llave Pública (e): {e}")
+print(f"Llave Privada (d): {d}")
+
+
+mensaje_cifrado = []
+for letra in palabra:
+    m = ord(letra) 
+    c = pow(m, e, n) 
+    mensaje_cifrado.append(c)
+
+print("\n--- Mensaje Cifrado ---")
+print(mensaje_cifrado)
+
+
+mensaje_descifrado = ""
+for c in mensaje_cifrado:
+    m_ascii = pow(c, d, n) 
+    mensaje_descifrado += chr(m_ascii)
+
+print("\n--- Mensaje Descifrado ---")
+print(f"Resultado: {mensaje_descifrado}")
